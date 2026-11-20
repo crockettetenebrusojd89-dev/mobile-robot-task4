@@ -178,3 +178,4 @@
 - 新增 `scripts/check_scan_clock.py`，同一进程限时采集 `/scan` 与 `/clock`，按单调接收时间配对，以实际 scan frame 查询底盘安装 TF。沙箱内 DDS 接口受限，实际仿真与只读采样在受控宿主机运行。复测进程已通过 SIGINT 正常关闭。
 - 两次实际仿真探针均返回 0。复测为 210 条 scan、936 条 clock、182 对近邻、最大时间差 0.123 秒。两次各 8 次 TF 一致且符合安装模型，复测动力与状态节点均使用仿真时钟。原始记录见 `results/m1_sensor_check/2026-11-20_t1_1.wcd8p5/` 与 `results/m1_sensor_check/2026-11-20_t1_1_repeat.Xz5GZn/`。
 - 实际检查了脚本语法、配对边界、暂停和错时钟、TF 样本不足、实测 TF 与安装模型一致性。Markdown 链接、YAML 和 JSON 检查通过，`bash build.sh` 完成一个包，`workspace_info` 找到安装配置。后续按 T1.2 做低速运动验收，T1.3 验证 RGB-D 对齐。
+- 经用户设备授权后创建私有 GitHub 仓库 `mobile-robot-task4`，配置本地 `origin` 与项目专用 HTTPS 凭据助手。首次推送绑定 `main → origin/main`，用 `git ls-remote` 核对远端为 `c563d392f69f522c9dd890df6e2d735c1cab564a`。暂存范围检查确认课程原件、原始日志和生成产物留在本机。 [GitHub 仓库](https://github.com/crockettetenebrusojd89-dev/mobile-robot-task4)

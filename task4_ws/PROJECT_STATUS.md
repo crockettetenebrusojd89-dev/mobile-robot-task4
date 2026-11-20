@@ -38,7 +38,7 @@ M0 已完成，M1 部分通过。Codex 两次在静止仿真中验证 T1.1 雷�
 
 ## GitHub
 
-项目根目录已初始化 Git，首个阶段提交包含 T1.1 探针与交接摘要。专用私有 GitHub 仓库待完成设备授权后创建并绑定为 `origin`。
+项目根目录已绑定私有 GitHub 仓库为 `origin`，本地 `main` 跟踪 `origin/main`。首个 T1.1 检查点 `c563d39` 已推送并核对。 [任务四 GitHub 仓库](https://github.com/crockettetenebrusojd89-dev/mobile-robot-task4)
 
 ## 下一步
 
