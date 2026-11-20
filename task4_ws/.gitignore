@@ -1,0 +1,17 @@
+/build/
+/install/
+/log/
+/.compat/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+/results/**
+!/results/README.md
+/models/weights/
+*.bag
+*.db3
+*.mcap

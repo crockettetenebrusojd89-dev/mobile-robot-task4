@@ -1,0 +1,21 @@
+# 项目配置草案，不是可以直接传入节点的 ROS 参数文件。
+# 相机话题已于 2026-11-08 采样；整体 verified=false 表示 TF/对齐等尚未完整验收。
+schema_version: 1
+verified: false
+map_frame: map
+base_frame: base_link
+scan_frame: turtlebot4/rplidar_link/rplidar
+scan_tf_clock_evidence: results/m1_sensor_check/2026-11-20_t1_1_repeat.Xz5GZn/summary.json
+camera_optical_frame: oakd_rgb_camera_optical_frame
+depth_encoding: 32FC1
+depth_unit: m
+depth_unit_basis: REP118 convention for the sampled Gazebo depth stream
+rgb_depth_aligned: null
+camera_observation_evidence: results/m1_sensor_check/agent-rgbd-report-2026-11-08.json
+topic_candidates:
+  scan: /scan
+  rgb: /oakd/rgb/preview/image_raw
+  depth: /oakd/rgb/preview/depth
+  camera_info: /oakd/rgb/preview/camera_info
+detector_version: null
+voice_provider: null

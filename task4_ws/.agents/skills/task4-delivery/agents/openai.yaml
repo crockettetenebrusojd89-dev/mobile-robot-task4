@@ -1,0 +1,4 @@
+interface:
+  display_name: "任务四项目开发与验收"
+  short_description: "面向任务四的 ROS 2 开发、排错、定位去重、分步学习与证据验收流程"
+  default_prompt: "使用 $task4-delivery，根据当前项目状态推进下一项依赖已满足的任务，并保存验收证据。"

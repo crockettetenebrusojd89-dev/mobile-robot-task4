@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "name": "任务四 物体搜寻与计数机器人",
+      "path": "task4_ws"
+    }
+  ],
+  "settings": {
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "files.watcherExclude": {
+      "**/build/**": true,
+      "**/install/**": true,
+      "**/log/**": true
+    },
+    "search.exclude": {
+      "build": true,
+      "install": true,
+      "log": true
+    }
+  }
+}

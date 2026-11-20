@@ -1,0 +1,20 @@
+# 未标定示例：所有位置需要从实际地图读取，不可直接用于导航。
+schema_version: 1
+calibrated: false
+frame_id: map
+rooms:
+  kitchen:
+    display_name: 厨房
+    entrance_pose: null
+    boundary_polygon: []
+    observation_poses: []
+  living_room:
+    display_name: 客厅
+    entrance_pose: null
+    boundary_polygon: []
+    observation_poses: []
+  bedroom:
+    display_name: 卧室
+    entrance_pose: null
+    boundary_polygon: []
+    observation_poses: []

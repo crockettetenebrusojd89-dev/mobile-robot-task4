@@ -1,0 +1,9 @@
+# 综合设计大项目
+
+当前开发工作区为 task4_ws。先读 task4_ws/AGENTS.md、task4_ws/PROJECT_STATUS.md 和 task4_ws/docs/学习进度.md。
+
+当前阶段由用户单人推进。每个实质进展更新 [交接文档](task4_ws/docs/交接文档.md)，写清验证人、证据、剩余缺口和复现入口。完成可验证的里程碑时，按用户授权提交并推送到任务四专用 GitHub 远端，记录推送结果。
+
+本项目用于任务四物体搜寻与计数，和原自主移动机器人目录中的课程实验分开管理。新增代码、文档和结果放在本目录；migration_archive 用于历史构建回退参考。实质性变更继续维护工作区状态和追加工作记录。
+
+任务四实现、调试、实验验收及配套学习使用项目 skill：先读 [task4-delivery](task4_ws/.agents/skills/task4-delivery/SKILL.md)，再按其中的索引读取相关参考。该显式入口也适用于从项目总目录开始的会话。任务范围和使用示例见 [项目任务与 Skill 说明](task4_ws/docs/项目任务与Skill说明.md)。
