@@ -202,3 +202,11 @@
 - 话题、frame、深度编码与单位同配置一致。将 `frames_topics.yaml` 的 `verified` 设为 true，补齐 M1 总验收与运动证据路径。适用范围为 ROS 2 Humble / TurtleBot4 Lite / Fortress maze。更新第一步结论、项目状态、任务卡、学习进度和交接文档。
 - 实际检查通过：YAML 解析及四份证据路径和哈希、文档链接与锚点、代码围栏、`git diff --check`、`bash build.sh`、安装入口和安装配置逐字节比对。此次为离线复核与配置固化。复核命令、回放和构建输出保存在本机 `results/m1_sensor_check/2026-11-21_t1_4.8nqety/`。
 - M1 检查点的配置和交接同步到私有 GitHub 的 `origin/main`，后续从 T2.1 自定义最小世界入口继续。教师对课程平台的确认仍待取得，用户自主复现和学习反馈分别保留。
+
+## 2026-11-21 T2.1 项目自定义场景入口通过
+
+- 执行人 Codex。回应用户的地图来源问题。核对教师任务书原文、教程压缩包清单以及三份 PDF 的附件清单。任务书要求键盘遥控建图并保存，教程未附可直接加载的课程地图。项目 `maps/` 当前为正式地图预留，系统的 TurtleBot4 示例地图另作参考。
+- 新建 `worlds/task4_smoke.sdf` 与 `launch/task4_sim.launch.py`，通过 `TASK4_WORLD` 选择项目场景，沿用安装包的机器人、充电座与传感器配置。首次项目世界已经生成模型，传感器仍订阅默认 `warehouse`，证据保留在 `results/m2_scene/2026-11-21_t2_1.Ls3E4T/`。修正为从 SDF 取实际世界名传给上游桥接。
+- 隔离仿真复测在 `task4_smoke` 发现机器人、充电座和测试墙，实际收到 RGB、深度、CameraInfo、LaserScan 和唯一来源的 `/clock`。相机中心深度约 2.468 m，底盘前向测试墙的雷达中位距离约 2.430 m。默认入口仍加载 maze，启动时 CLI 类型发现有短暂竞争，指定 LaserScan 类型重采后收到实际帧。默认回归目录为 `results/m2_scene/2026-11-21_t2_1_default.htTZHV/`，综合证据为 `results/m2_scene/2026-11-21_t2_1_retry.tPeRk5/summary.json`，两次仿真均释放项目锁。
+- 已检查 Bash、Python、SDF 语法，两个入口的启动参数，路径形状与缺失世界的返回码，实测证据文件与源码哈希，文档链接、锚点、围栏和 Git diff。用户复现待反馈。首个场景源文件、启动入口和交接同步到私有 GitHub 的 `origin/main`。
+- 下一项 T2.2 制作三房间布局和家具。T2.3 用户键盘遥控建图，T2.4 保存课程地图。
