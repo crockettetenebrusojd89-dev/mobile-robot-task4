@@ -25,7 +25,12 @@ if [[ "${TASK4_USE_NVIDIA:-1}" == 1 ]] && command -v nvidia-smi >/dev/null 2>&1;
   export __GLX_VENDOR_LIBRARY_NAME=nvidia
 fi
 if [[ -n "${TASK4_WORLD:-}" ]]; then
-  exec ros2 launch "$TASK4_WS/launch/task4_sim.launch.py" world_file:="$world_file" "$@"
+  spawn_args=()
+  if [[ "$TASK4_WORLD" == task4_home ]]; then
+    spawn_args=(x:=1.1 y:=3.0)
+  fi
+  exec ros2 launch "$TASK4_WS/launch/task4_sim.launch.py" world_file:="$world_file" \
+    "${spawn_args[@]}" "$@"
 fi
 exec ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py \
   world:=maze model:=lite rviz:=false "$@"

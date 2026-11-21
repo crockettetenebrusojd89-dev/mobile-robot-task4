@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "models": [
+    {
+      "id": "task4_chair",
+      "version": "1.0",
+      "origin": "authored in this project",
+      "purpose": "provisional vision target for building scene and T3.1 capture",
+      "source_files_sha256": {
+        "models/task4_chair/model.config": "74a966aa3573902a0aed64c382da014bce59864a06e932e2ead02ec80bb2ea7b",
+        "models/task4_chair/model.sdf": "e3adba8c08702d31329fb98aa68813e4f6e660f07d500899c0514303ea5a7430"
+      }
+    },
+    {
+      "id": "task4_home_furniture",
+      "version": "1.0",
+      "origin": "authored in this project",
+      "source_files_sha256": {
+        "worlds/task4_home.sdf": "22e1d14a3b29ad7c9fd9f53588735ad87d26a72647666c8124c0d0f65f4e6e08"
+      }
+    }
+  ]
+}
