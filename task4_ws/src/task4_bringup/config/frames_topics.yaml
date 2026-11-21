@@ -10,7 +10,8 @@ camera_optical_frame: oakd_rgb_camera_optical_frame
 depth_encoding: 32FC1
 depth_unit: m
 depth_unit_basis: REP118 convention for the sampled Gazebo depth stream
-rgb_depth_aligned: null
+rgb_depth_aligned: true
+rgb_depth_alignment_evidence: results/m1_sensor_check/2026-11-21_t1_3_raised.dET159/summary.json
 camera_observation_evidence: results/m1_sensor_check/agent-rgbd-report-2026-11-08.json
 topic_candidates:
   scan: /scan

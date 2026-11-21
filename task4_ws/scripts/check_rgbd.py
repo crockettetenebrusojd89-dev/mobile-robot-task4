@@ -22,7 +22,7 @@ def image_metadata(msg):
     }
 
 
-def summarize_depth(msg):
+def depth_in_meters(msg):
     """Interpret standard REP 118 depth encodings, respecting row padding/endian."""
     width, height, step = int(msg.width), int(msg.height), int(msg.step)
     encoding = str(msg.encoding).upper()
@@ -38,6 +38,12 @@ def summarize_depth(msg):
     meters = pixels.astype(np.float64)
     if encoding == "16UC1":
         meters *= 0.001
+    return meters
+
+
+def summarize_depth(msg):
+    meters = depth_in_meters(msg)
+    height, width = meters.shape
     valid_mask = np.isfinite(meters) & (meters > 0.0)
     values = meters[valid_mask]
     u, v = width // 2, height // 2
