@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "map_id": "task4_home_v1",
+  "saved_at": "2026-11-21T21:24:27+08:00",
+  "world": {
+    "file": "worlds/task4_home.sdf",
+    "sha256": "22e1d14a3b29ad7c9fd9f53588735ad87d26a72647666c8124c0d0f65f4e6e08"
+  },
+  "files_sha256": {
+    "task4_home_v1.pgm": "758a418b59d1a12b4ee7a047d1219ec50653746ffb08474de4e78c4162a5b2b3",
+    "task4_home_v1.yaml": "ab29bf7faa239f4e144d6f64a310da57ff4f385822d889546f0fe465b9286b60"
+  },
+  "raster": {
+    "width": 194,
+    "height": 159,
+    "resolution_m": 0.05
+  },
+  "source": "user_keyboard_teleoperation",
+  "verifier": "Codex",
+  "robot_pose_at_save_map_xy_yaw": [
+    1.218,
+    2.31,
+    2.849
+  ],
+  "gazebo_default_spawn_world_xy_yaw": [
+    1.1,
+    3.0,
+    0.0
+  ],
+  "gazebo_default_spawn_map_xy_yaw_estimate": [
+    -0.4369,
+    1.7654,
+    -0.4482
+  ],
+  "spawn_estimate_method": "Compared parked robot poses and refined a rigid alignment against expected wall surfaces.",
+  "amcl_localization_status": "pending",
+  "local_evidence": "results/m2_map_nav/2026-11-21_t2_3_map_review.ZRcSwE"
+}
