@@ -8,7 +8,7 @@
   },
   "files_sha256": {
     "task4_home_v1.pgm": "758a418b59d1a12b4ee7a047d1219ec50653746ffb08474de4e78c4162a5b2b3",
-    "task4_home_v1.yaml": "ab29bf7faa239f4e144d6f64a310da57ff4f385822d889546f0fe465b9286b60"
+    "task4_home_v1.yaml": "0b83ea0d56903085514014f75bf7c19cf382fe8e90d202af39153bc648175fb9"
   },
   "raster": {
     "width": 194,
@@ -33,6 +33,7 @@
     -0.4482
   ],
   "spawn_estimate_method": "Compared parked robot poses and refined a rigid alignment against expected wall surfaces.",
-  "amcl_localization_status": "pending",
+  "amcl_localization_status": "verified_simulation",
+  "amcl_verification_evidence": "results/m2_map_nav/2026-11-22_t2_4_udp.775bcx0o/summary.json",
   "local_evidence": "results/m2_map_nav/2026-11-21_t2_3_map_review.ZRcSwE"
 }
