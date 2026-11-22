@@ -1,0 +1,28 @@
+schema_version: 1
+objects:
+  chair:
+    display_name: 椅子
+    enabled: true
+    synonyms:
+      - 椅子
+      - 凳子
+      - 座椅
+      - 木椅
+  bottle:
+    display_name: 瓶子
+    enabled: false
+    note: 按瓶子类别识别，不区分品牌
+    synonyms:
+      - 矿泉水瓶
+      - 饮料瓶
+      - 瓶子
+      - 水瓶
+      - 可乐
+  cup:
+    display_name: 杯子
+    enabled: false
+    synonyms:
+      - 马克杯
+      - 茶杯
+      - 水杯
+      - 杯子

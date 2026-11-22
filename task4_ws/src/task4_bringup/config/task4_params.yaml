@@ -1,0 +1,45 @@
+object_locator:
+  ros__parameters:
+    use_sim_time: true
+    rgb_topic: /oakd/rgb/preview/image_raw
+    depth_topic: /oakd/rgb/preview/depth
+    camera_info_topic: /oakd/rgb/preview/camera_info
+    observations_topic: /task4/observations
+    status_topic: /task4/perception_status
+    debug_image_topic: /task4/debug_image
+    publish_debug_image: true
+    map_frame: map
+    detector_backend: hsv
+    classes: ["chair"]
+    conf: 0.25
+    imgsz: 640
+    weights_path: ""
+    max_rate_hz: 5.0
+    sync_queue_size: 5
+    sync_slop_sec: 0.02
+    tf_timeout_sec: 0.2
+    stale_timeout_sec: 2.0
+    inner_ratio: 0.6
+    depth_band_m: 0.15
+    min_valid_ratio: 0.2
+    z_min_m: 0.1
+    z_max_m: 10.0
+
+search_manager:
+  ros__parameters:
+    use_sim_time: true
+    rooms_file: src/task4_bringup/config/rooms.yaml
+    objects_file: src/task4_bringup/config/objects.yaml
+    map_file: maps/task4_home_v1.yaml
+    results_dir: results/runs
+    map_frame: map
+    dwell_sec: 0.75
+    settle_sec: 0.3
+    nav_timeout_sec: 200.0
+    max_retries: 1
+    min_frames_per_dwell: 3
+    # Kitchen rechecks showed duplicate records 0.37–0.47 m apart.
+    # Keep the gate below 0.60 m, half the minimum chair spacing in task4_home.
+    gate_m: 0.50
+    min_hits: 3
+    room_margin_m: 0.1

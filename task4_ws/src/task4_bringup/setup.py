@@ -23,5 +23,8 @@ setup(
     entry_points={"console_scripts": [
         "workspace_info = task4_bringup.workspace_info:main",
         "scan_reader = task4_bringup.scan_reader:main",
+        "object_locator = task4_bringup.object_locator:main",
+        "task_cli = task4_bringup.task_cli:main",
+        "search_manager = task4_bringup.search_manager:main",
     ]},
 )

@@ -10,6 +10,14 @@ M2 已完成地图制作、重载定位和三房间标定。T2.6、T2.7 的 NavF
 
 M3 的 T3.1 已完成工程初筛。在现有 `task4_home` 内选定自制棕红色椅子，首版用 HSV 颜色检测。独立 36 帧命中 47/52 个可计分实例，0 误检。 [检测验收](docs/交接文档.md#t31-椅子检测可行性)
 
+M3 的 T3.2 已完成离线验证。新增纯 Python 几何模块 `geometry3d.py` 及 7 项单元测试，并在 T3.1 独立 36 帧的 49 个 HSV 检测框上复测有效。 [T3.2 交接](docs/交接文档.md#t32-几何纯函数与反投影)
+
+M3 的 T3.3 已在真实 `task4_home` Gazebo + AMCL（`map` 系）中完成端到端实测验证。T3.4 客厅三视角最大中位点偏差 0.1554 m，当时采用关联门限 0.35 m。**M3 已完成工程验收**。 [T3.3 实测](docs/交接文档.md#t33-object_locator-在线定位节点) · [T3.4 误差与门限](docs/交接文档.md#t34-多视角误差与关联门限)
+
+M4 已完成全部模块验收（T4.1 去重关联、T4.2 结果保存与地图标注、T4.3 143 帧实景回放去重）；M5 已完成 T5.0 评估器、T5.1 中文任务解析、T5.2 `search_manager` 状态机以及 **T5.3 文字任务端到端验收（G2 检查点达成）**：在 `task4_home` 隔离仿真中跑通厨房（`count=2/2`, `tp=2, fp=0, fn=0`）与卧室空房（`count=0/0`），含跨观察点重访去重与门外目标拒识实证。下一步推进 **T5.4 中文语音输入**（百度/Vosk 预检）与 **T5.6 语音整链演示（G3 检查点）**。 [T5.3 端到端实测](docs/交接文档.md#t53-文字任务端到端g2-检查点)
+
+T5.3 耗时复测后，当前搜索配置使用 0.75 s 仿真时间取图窗口和 0.50 m 关联门限。Codex 实测厨房 2/2、119.015 s，卧室 0/0、111.039 s，均完成 12/12 个位姿。厨房停稳、取图和其他间隔合计少 5.714 s，单次端到端对照仍受导航耗时波动影响。 [耗时复测](docs/交接文档.md#t53-耗时复测与参数)
+
 教师教程一链接的 AWS 小屋仓库确实提供配套示例地图，教程二的 RViz 截图与该地图的元数据和轮廓吻合。当前 `task4_home` 使用项目自建的布局。 [教程地图来源核对](maps/README.md#教程里的地图来源)
 
 地图实测对比中，Nav2 成功加载 AWS 栅格，临时修正鞋架惯量后 Gazebo Fortress 读到 AWS 小屋 87 个模型。AWS 机器人定位验证待做。用户首轮重影地图与 RViz 崩溃证据已归档，第二轮使用项目自建场景通过 T2.3。 [首次重影排查](docs/交接文档.md#首次地图重影后的重建)
@@ -46,11 +54,52 @@ M3 的 T3.1 已完成工程初筛。在现有 `task4_home` 内选定自制棕红
 
 ## GitHub
 
-项目根目录已绑定私有 GitHub 仓库为 `origin`，本地 `main` 跟踪 `origin/main`。首个 T1.1 检查点 `c563d39` 已推送并核对。 [任务四 GitHub 仓库](https://github.com/crockettetenebrusojd89-dev/mobile-robot-task4)
+项目根目录已绑定私有 GitHub 仓库为 `origin`，本地 `main` 跟踪 `origin/main`。从 T1.1 到 G2 的同步范围与本机回执入口见 [交接文档](docs/交接文档.md#github-同步)。 [任务四 GitHub 仓库](https://github.com/crockettetenebrusojd89-dev/mobile-robot-task4)
 
 ## 下一步
 
-下一项为 T3.2，实现框内有效深度筛选及反投影，用像素和 Z 深度计算相机系三维点。 [T3.2 任务卡](docs/任务四开发与验收路线.md#t32-几何纯函数b离线可立即开始)
+1. 完成 **T5.4 中文语音输入**（核查本机麦克风/录音工具及百度短语音或离线 Vosk 模型），接入 T5.1/T5.2 跑通 **T5.6 真实语音整链与 `task4_demo.launch.py`（G3 检查点）**。
+2. 随后补齐 **M6 展示与报告**（T5.5 代表性场景矩阵、T6.1 彩排与备份视频、11-27 展示 PPT、T6.3 评估汇总、12-06 前设计报告）并向教师核实 D1（平台替换）与确定 D4 分工。 [T5.4 任务卡](docs/任务四开发与验收路线.md#t54-语音输入c用户麦克风d3) · [T5.6 任务卡](docs/任务四开发与验收路线.md#t56-真实中文语音整链与复现入口)
+
+## 2026-11-22 T5.3 耗时复测与空房回归
+
+- 验证人 Codex。用同一厨房路线复跑原配置与转向评分前视时间 1.3 s 候选，完成时间分别为 113.930 s 和 115.687 s，均出现计数 4/2。保留原 Nav2 参数。两个视角下的重复编号中心距离最高为 0.470 m，复测采用 0.50 m 关联门限并将每个位姿取图窗口由 1.00 s 缩到 0.75 s。
+- 最终配置在厨房 `t20261122-190655` 和卧室 `t20261122-191002` 分别正确输出 2/2 和 0/0。两次均通过结果读回、独立真值和四项版本校验。客厅 143 帧回放仍得到原来的两个可见目标。证据、耗时构成与复现见 [交接文档](docs/交接文档.md#t53-耗时复测与参数)。相近同类、近边界、不同负载下的稳定耗时以及用户复现待补。
+
+## 2026-11-22 T5.3 文字任务端到端验收通过（G2 检查点）
+
+- 验证人 Antigravity。上线前修复 `task4_params.yaml` 顶层非 ROS 参数块导致的参数解析报错，在 `search_manager.py` 增加事件排空循环、窗口在途旧帧时间戳过滤与逐点实时日志，并修复 `task_cli.py` 瞬时退出的 DDS 可靠握手竞态（等待匹配至 5 s、发前后刷新窗口），同时按低仿真实时因子（RTF≈0.14–0.20）将 `search_manager` 调为 `nav_timeout_sec: 200.0`、`dwell_sec: 1.0`、`settle_sec: 0.3`。
+- 在隔离 `task4_home` Gazebo + AMCL + Nav2 A* + `object_locator` + `search_manager` 中通过 `task_cli` 分别完成厨房与卧室端到端测试：
+  - **厨房（`t20261122-162135`）**：12 个观察位姿全 `SUCCEEDED`，`status=COMPLETED`，耗时 `647.125 s`，输出 `2` 把椅子（`#1` `n_obs=51`, `first=19.668 s, last=65.802 s`；`#2` `n_obs=36`, `first=38.346 s, last=61.908 s`），跨两个观察点重访未增编号；拒识门外客厅观测 `48` 次；`verify_run.py` 返回 `ok: true`；`evaluate_run.py` 返回四项版本校验通过、`count_error=0`、`tp=2, fp=0, fn=0`、平均位置差 `0.1806 m`。
+  - **卧室（`t20261122-165346`）**：12 个观察位姿全 `SUCCEEDED`，`status=COMPLETED`，耗时 `701.879 s`，输出 `0` 把椅子；拒识门外客厅观测 `47` 次；`verify_run.py` 返回 `ok: true`；`evaluate_run.py` 返回 `count_error=0`、`tp=0, fp=0, fn=0`。
+- 保留首轮 360 s 串联超时和厨房首次脚本相对路径报错记录。汇总在 `results/m5_task/2026-11-22_t5_3/index.md`，运行证据在 `results/runs/t20261122-162135/`、`results/runs/t20261122-165346/` 及 `results/m5_task/2026-11-22_t5_3_{kitchen,bedroom}/`。用户实操复现与理解待记录。
+
+## 2026-11-22 T4.2 结果保存标注、T5.0 独立评估与 T5.2 search_manager 状态机
+
+- **T4.2 结果保存与地图标注（Antigravity）**：新增 `map_annotate.py`（`world_to_pixel`/`pixel_to_world` 含旋转与行翻转、`render_annotated_map` 原子渲染）和 `result_io.py`（原子写 `task.json`、`inventory.json`、`viewpoints.json`、`status.json`、`map_annotated.png`、`map_annotations.json`、`run.log` 并立即读回校验）以及 `scripts/verify_run.py`。3 项单元测试通过（含 `yaw≠0` 互逆、篡改检出、真实 `task4_home_v1` 地图渲染），并用 T4.3 回放生成 `sample_run/map_annotated.png`，目视确认 `#1` 与 `#2` 准确落在客厅椅子位置。证据在 `results/m4_counting/2026-11-22_t4_2/`。
+- **T5.0 独立真值评估（Antigravity）**：新增 `scripts/evaluate_run.py`，核对地图/世界 SHA-256，使用 `maps/manifest.json` 的二维刚体配准将 `task4_home.truth.yaml` 投到 `map` 系并与 `inventory.json` 做门限内最优一对一匹配。实测评估 T4.2 客厅局部样例（`expected=3, predicted=2, tp=2, fp=0, fn=1`，平均定位差 `0.1560 m`）与卧室零目标样例（`expected=0, predicted=0, count_error=0`），四项哈希核对全通过。证据在 `results/m5_eval/2026-11-22_t5_0/`。
+- **T5.2 `search_manager` 状态机（Antigravity）**：新增 `search_status.py`（纯函数 `decide_status` 与任务书 R9 终端汇总格式 `format_terminal_summary`）、`search_manager.py`（`SearchExecutor` 状态机与 ROS `SearchManagerNode` 节点）及 `test_search_status.py`；在 `task4_params.yaml` 补充 `search_manager` 参数，在 `setup.py` 注册 `search_manager` 入口。`bash build.sh` 构建通过，ROS 2 环境全套 **36/36 单元测试通过**，`ros2 pkg executables task4_bringup` 列出全部 5 个入口。证据在 `results/m5_task/2026-11-22_t5_2/`。
+
+## 2026-11-22 T3.3 真实 Gazebo + AMCL 实测、T3.4 多视角门限、T4.1/T4.3 与 T5.1
+
+- **T3.3 真实仿真实测（Antigravity）**：在隔离域 168 的 `task4_home` Gazebo Fortress + AMCL（`map` 系）中启动 `object_locator`。机器人正面朝向客厅 `chair_living_room_01` 实测 `valid_frame=true`，`map` 坐标为 `[0.7639, 1.1969, 0.3956]` m（`valid_ratio=1.0`，`spread=0.0972`）；原地左转约 180° 面向西墙后输出 3 帧有效空观测 `valid_frame=true, detections=[]`；状态 `stale=false`（`processed_frames=139, valid_frames=119`）。保存 `/task4/debug_image` 实拍叠框图 `debug_chair.png` 与 `debug_empty.png`。证据在 `results/m3_localization/2026-11-22_t3_3_live/`。
+- **T3.4 多视角误差与门限（Antigravity）**：新增 `scripts/record_observations.py` 与 `scripts/analyze_localization.py`。借助 Nav2 A* 与 `NavigationClient` 依次在客厅 `v1_spawn`（48/48 帧）、`v2_sw`（`SUCCEEDED`，50/50 帧）、`v3_nw`（45/45 帧）各静止录制 10 s（第 4 点 `v4_south` 65 s 超时取消，保留记录）。同一把椅子的三视角中位坐标为 `(0.7638, 1.1977)`、`(0.6084, 1.1933)`、`(0.6896, 1.2972)` m，最大跨视角中位偏差 **0.1554 m**（< 0.30 m 目标）。结合场景最小椅间距 1.20 m（上界 0.60 m），将关联门限 `gate_m: 0.35`、`min_hits: 3`、`room_margin_m: 0.1` 写入 `src/task4_bringup/config/task4_params.yaml`。证据在 `results/m3_localization/2026-11-22_t3_4/`（含 `analysis.json`、`scatter.png`）。
+- **T4.1 与 T4.3 去重关联及实景回放（Antigravity）**：新增 `room_geometry.py`、`association.py`（含最大基数最小代价二分匹配与重复时间戳/跨房拒识）和 7 项单元测试；新增 `scripts/replay_count.py` 回放 T3.4 三视角共 143 帧实景数据，结果 `chair #1` 稳定聚合全部 143 帧（`(0.6896, 1.1977)` m），`v3_nw` 视角同时扫到的南侧椅子 `chair #2` 聚合 45 帧（`(0.1130, -0.9887)` m），`ambiguity_count=0`，重访无重复编号。证据在 `results/m4_counting/2026-11-22_t4_1/` 与 `results/m4_counting/2026-11-22_t4_3/`。
+- **T5.1 任务解析与 CLI（Antigravity）**：新增 `config/objects.yaml`（`chair` 启用，`bottle`/`cup` 暂禁用并标注可乐映射说明）、`task_parser.py`、`task_cli.py` 与 3 项单元测试。`bash build.sh` 构建通过，ROS 2 全套 **30/30 单元测试通过**，`ros2 run task4_bringup task_cli --dry-run "去厨房数一下有几把椅子"` 返回结构化 JSON。证据在 `results/m5_task/2026-11-22_t5_1/`。用户复现、理解反馈与实际语音输入待记录。
+
+## 2026-11-22 T3.3 object_locator 在线定位节点
+
+- 验证人 Antigravity。新增 `src/task4_bringup/task4_bringup/object_locator.py`、`detector.py`、`config/task4_params.yaml` 与 `test/test_object_locator.py`；在 `setup.py` 注册入口 `object_locator`，在 `package.xml` 新增 `message_filters`、`std_msgs`、`tf2_ros` 依赖。
+- `object_locator` 使用 `ApproximateTimeSynchronizer([rgb, depth], queue_size=5, slop=0.02)` 与 `qos_profile_sensor_data`，缓存并校验 `CameraInfo`，使用线程安全的最新待处理槽与 `max_rate_hz` 节流，并在仿真时间倒退重置时丢弃旧帧并清空 TF 缓冲。在工作线程中进行有界 TF 轮询等待（不阻塞主 `rclpy.spin` 接收 `/tf` 和 `/clock`），向 `/task4/observations`、`/task4/perception_status` 和 `/task4/debug_image` 发布消息。
+- `bash build.sh` 构建 1 个包通过；`source env.sh && python3 -m pytest src/task4_bringup/test -v` **20/20 全部通过**（`geometry3d` 7、`navigation` 2、`object_locator` 6、`scan_math` 5）。
+- 运行 `live_ros_graph_check.py` 在真实 `rclpy` `SingleThreadedExecutor` 中实测 `ObjectLocatorNode`（加载 `task4_params.yaml` 并设 `map_frame:=odom`）：回放 T3.1 `frame_000` 椅子帧在采样时刻 `10.52 s` 正确输出 `odom` 坐标 `[1.8229, 0.0491, 0.3738]`；有效空帧输出 `valid_frame=true, detections=[]`；TF 缺失帧标记 `valid_frame=false` 与 `tf_lookup_failed` 原因；停止深度输入后状态转为 `stale=true`；收到 3 帧调试图像。
+- 注：在本机执行工具环境中，两个独立子进程之间的 DDS 跨进程组播发现未在时限内连通，因此在线节点联调采用同一 `rclpy` 上下文双节点测试；真实 Gazebo + AMCL（`map` 系）端到端实测及用户复现待记录。证据在 `results/m3_localization/2026-11-22_t3_3/`。 [交接与复现](docs/交接文档.md#t33-object_locator-在线定位节点)
+
+## 2026-11-22 T3.2 相机反投影与 TF 几何纯函数
+
+- 验证人 Antigravity。在 `src/task4_bringup/task4_bringup/geometry3d.py` 实现无 ROS 依赖的 `region_point`、`quat_to_matrix` 和 `transform_point`，在 `src/task4_bringup/test/test_geometry3d.py` 新增 7 项单元检查。
+- `region_point` 取检测框中心 60% 区域内有限且在 `[z_min, z_max]` 量程内的深度，以 20% 分位数 `z_ref` 筛选 `[z_ref, z_ref + band]` 前景像素逐点反投影并求均值；无效或有效比例低于 `min_valid_ratio` 时返回 `valid=False` 与具体原因，不返回零点。
+- `PYTHONPATH=src/task4_bringup python3 -m pytest src/task4_bringup/test/test_geometry3d.py src/task4_bringup/test/test_scan_math.py -v` 通过 12/12 项（7 项几何 + 5 项激光回归）；用 T3.1 独立复测的 36 帧 49 个 HSV 检测框和 32FC1 深度回放，49/49 框均输出有效的相机系与 `base_link` 系三维点。`test_navigation.py` 依赖工作区外 ROS `action_msgs` 未在沙箱重跑。证据在 `results/m3_localization/2026-11-22_t3_2/`。用户复现与最小理解任务待反馈。 [交接与复现](docs/交接文档.md#t32-几何纯函数与反投影)
 
 ## 2026-11-22 T3.1 椅子检测初筛
 
