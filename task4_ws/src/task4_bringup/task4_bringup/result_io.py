@@ -1,5 +1,6 @@
 """Atomic task result persistence and read-back integrity verification; no ROS dependency."""
 
+import hashlib
 import json
 import math
 import os
@@ -101,6 +102,19 @@ def verify_run_directory(run_dir):
         ann = json.loads((run_dir / "map_annotations.json").read_text(encoding="utf-8"))
     except Exception as exc:
         return {"ok": False, "errors": [f"json_read_error:{exc}"]}
+
+    if task.get("source") == "voice":
+        try:
+            voice = json.loads((run_dir / "voice.json").read_text(encoding="utf-8"))
+            audio = (run_dir / "voice.wav").read_bytes()
+            if voice["task_id"] != task["task_id"] or voice["input"] != task.get("voice_input"):
+                errors.append("voice_task_mismatch")
+            if "".join(voice["transcript"].split()) != task.get("text"):
+                errors.append("voice_transcript_mismatch")
+            if not audio or hashlib.sha256(audio).hexdigest() != voice["audio_sha256"]:
+                errors.append("voice_audio_mismatch")
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
+            errors.append(f"voice_read_error:{exc}")
 
     objects = inv.get("objects", [])
     if inv.get("count") != len(objects):

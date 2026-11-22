@@ -13,6 +13,7 @@ setup(
         ("share/ament_index/resource_index/packages", ["resource/" + PACKAGE_NAME]),
         ("share/" + PACKAGE_NAME, ["package.xml"]),
         (os.path.join("share", PACKAGE_NAME, "config"), glob("config/*.yaml")),
+        (os.path.join("share", PACKAGE_NAME, "launch"), glob("launch/*.launch.py")),
     ],
     install_requires=["setuptools"],
     zip_safe=True,
@@ -25,6 +26,7 @@ setup(
         "scan_reader = task4_bringup.scan_reader:main",
         "object_locator = task4_bringup.object_locator:main",
         "task_cli = task4_bringup.task_cli:main",
+        "voice_task = task4_bringup.voice_task:main",
         "search_manager = task4_bringup.search_manager:main",
     ]},
 )

@@ -38,35 +38,46 @@ def main(args=None):
         print(payload)
         return 0
 
+    publish_error = publish_task(payload, parsed_args.topic)
+    if publish_error:
+        print(json.dumps({"ok": False, "error": publish_error, "topic": parsed_args.topic}, ensure_ascii=False))
+        return 1
+    print(payload)
+    return 0
+
+
+def publish_task(payload, topic, *, node_name="task4_task_cli"):
+    """Wait for a subscriber and report a bounded DDS acknowledgement error."""
     import rclpy
+    from rclpy.duration import Duration
     from rclpy.node import Node
     from std_msgs.msg import String
 
     rclpy.init()
-    node = Node("task4_task_cli")
+    node = Node(node_name)
     try:
-        pub = node.create_publisher(String, parsed_args.topic, 10)
+        pub = node.create_publisher(String, topic, 10)
         deadline = time.monotonic() + 5.0
         while time.monotonic() < deadline and pub.get_subscription_count() == 0:
             rclpy.spin_once(node, timeout_sec=0.05)
         if pub.get_subscription_count() == 0:
-            print(json.dumps({"ok": False, "error": "no_subscriber", "topic": parsed_args.topic}, ensure_ascii=False))
-            return 1
+            return "no_subscriber"
         # Allow DDS reliable endpoint handshake to settle before publishing and tearing down.
-        settle_until = time.monotonic() + 0.3
+        settle_until = time.monotonic() + 1.0
         while time.monotonic() < settle_until:
             rclpy.spin_once(node, timeout_sec=0.05)
         msg = String()
         msg.data = payload
         pub.publish(msg)
+        if not pub.wait_for_all_acked(Duration(seconds=3.0)):
+            return "delivery_unconfirmed"
         flush_until = time.monotonic() + 0.5
         while time.monotonic() < flush_until:
             rclpy.spin_once(node, timeout_sec=0.05)
-        print(payload)
+        return None
     finally:
         node.destroy_node()
         rclpy.try_shutdown()
-    return 0
 
 
 if __name__ == "__main__":
