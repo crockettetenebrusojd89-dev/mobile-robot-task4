@@ -2,19 +2,22 @@
 schema_version: 1
 calibrated: false
 frame_id: map
+map_file: null
+map_sha256: null
+map_image_sha256: null
 rooms:
   kitchen:
     display_name: 厨房
     entrance_pose: null
     boundary_polygon: []
-    observation_poses: []
+    observation_points: []
   living_room:
     display_name: 客厅
     entrance_pose: null
     boundary_polygon: []
-    observation_poses: []
+    observation_points: []
   bedroom:
     display_name: 卧室
     entrance_pose: null
     boundary_polygon: []
-    observation_poses: []
+    observation_points: []
