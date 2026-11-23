@@ -15,6 +15,8 @@ import wave
 from task4_bringup.result_io import atomic_write_json
 from task4_bringup.task_cli import publish_task
 from task4_bringup.task_parser import (
+    build_object_aliases,
+    build_room_aliases,
     default_config_paths,
     generate_task_id,
     load_yaml_config,
@@ -26,7 +28,7 @@ SAMPLE_RATE = 16000
 DEFAULT_MODEL = Path("models/weights/vosk-model-small-cn-0.22")
 
 
-def recognize_wav(audio, model_path):
+def recognize_wav(audio, model_path, *, keywords=None):
     """Return the Vosk transcript and the duration of the recognized recording."""
     with wave.open(BytesIO(audio), "rb") as stream:
         if (stream.getnchannels(), stream.getsampwidth(), stream.getframerate()) != (1, 2, SAMPLE_RATE):
@@ -44,7 +46,14 @@ def recognize_wav(audio, model_path):
 
         SetLogLevel(-1)
         model = Model(model_path=str(model_path))
-        recognizer = KaldiRecognizer(model, SAMPLE_RATE)
+        if keywords is None:
+            recognizer = KaldiRecognizer(model, SAMPLE_RATE)
+        else:
+            vocabulary = sorted(word for word in keywords if model.vosk_model_find_word(word) >= 0)
+            if not vocabulary:
+                raise ValueError("Vosk 模型词表中找不到已配置的中文关键词。")
+            grammar = json.dumps([*vocabulary, "[unk]"], ensure_ascii=False)
+            recognizer = KaldiRecognizer(model, SAMPLE_RATE, grammar)
         segments = []
         remaining = frame_count
         while remaining:
@@ -84,6 +93,8 @@ def main(args=None):
     parser.add_argument("--device", default="default", help="ALSA recording device")
     parser.add_argument("--seconds", type=int, default=4)
     parser.add_argument("--model", type=Path, default=DEFAULT_MODEL)
+    parser.add_argument("--keyword-grammar", action="store_true",
+                        help="Limit Vosk decoding to configured Chinese room and object names")
     parser.add_argument("--rooms", type=Path)
     parser.add_argument("--objects", type=Path)
     parser.add_argument("--topic", default="/task4/task")
@@ -95,20 +106,32 @@ def main(args=None):
     if options.seconds < 1:
         parser.error("--seconds must be positive")
 
+    rooms_path, objects_path = default_config_paths()
     try:
+        rooms = load_yaml_config(options.rooms or rooms_path)
+        objects = load_yaml_config(options.objects or objects_path)
+        keywords = None
+        if options.keyword_grammar:
+            room_aliases, _ = build_room_aliases(rooms)
+            object_aliases, _ = build_object_aliases(objects)
+            keywords = {
+                alias
+                for aliases in (*room_aliases.values(), *object_aliases.values())
+                for alias in aliases
+                if any("\u4e00" <= char <= "\u9fff" for char in alias)
+            }
         audio = options.wav.read_bytes() if options.wav else record_wav(options.device, options.seconds)
         started = time.perf_counter()
-        transcript, duration = recognize_wav(audio, options.model)
+        transcript, duration = recognize_wav(audio, options.model, keywords=keywords)
         recognition_sec = time.perf_counter() - started
     except (OSError, EOFError, ValueError, RuntimeError, subprocess.SubprocessError, wave.Error) as exc:
         print_json({"ok": False, "error": "voice_input_failed", "message": str(exc)})
         return 1
 
-    rooms_path, objects_path = default_config_paths()
     result = parse_task(
         "".join(transcript.split()),
-        load_yaml_config(options.rooms or rooms_path),
-        load_yaml_config(options.objects or objects_path),
+        rooms,
+        objects,
         source="voice",
         task_id=f"{generate_task_id()}-voice-{uuid4().hex[:8]}",
         require_enabled=True,
@@ -131,6 +154,7 @@ def main(args=None):
                 "task_id": task["task_id"],
                 "input": voice_input,
                 "model": options.model.name,
+                "recognition_mode": "keyword_grammar" if options.keyword_grammar else "default",
                 "transcript": transcript,
                 "duration_sec": duration,
                 "recognition_sec": round(recognition_sec, 3),

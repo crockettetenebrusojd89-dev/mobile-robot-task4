@@ -63,13 +63,13 @@ def publish_task(payload, topic, *, node_name="task4_task_cli"):
         if pub.get_subscription_count() == 0:
             return "no_subscriber"
         # Allow DDS reliable endpoint handshake to settle before publishing and tearing down.
-        settle_until = time.monotonic() + 1.0
+        settle_until = time.monotonic() + 2.0
         while time.monotonic() < settle_until:
             rclpy.spin_once(node, timeout_sec=0.05)
         msg = String()
         msg.data = payload
         pub.publish(msg)
-        if not pub.wait_for_all_acked(Duration(seconds=3.0)):
+        if not pub.wait_for_all_acked(Duration(seconds=8.0)):
             return "delivery_unconfirmed"
         flush_until = time.monotonic() + 0.5
         while time.monotonic() < flush_until:

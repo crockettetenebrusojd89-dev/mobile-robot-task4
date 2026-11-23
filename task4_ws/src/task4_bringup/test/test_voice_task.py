@@ -36,6 +36,19 @@ def test_missing_room_does_not_publish(tmp_path, capsys):
     assert not results.exists()
 
 
+def test_keyword_mode_passes_configured_names_and_rejects_disabled_objects(tmp_path, capsys):
+    audio = tmp_path / "sample.wav"
+    audio.write_bytes(pcm_wav())
+    with patch.object(voice_task, "recognize_wav", return_value=("厨房 [unk] 杯子", 0.1)) as recognize:
+        with patch.object(voice_task, "publish_task") as publish:
+            assert voice_task.main(["--wav", str(audio), "--keyword-grammar"]) == 1
+            publish.assert_not_called()
+    keywords = recognize.call_args.kwargs["keywords"]
+    assert {"客厅", "厨房", "卧室", "椅子", "凳子", "杯子"} <= keywords
+    assert "kitchen" not in keywords
+    assert json.loads(capsys.readouterr().out)["error"] == "object_disabled"
+
+
 def test_synthetic_audio_evidence_exists_before_publish(tmp_path, capsys):
     audio = tmp_path / "sample.wav"
     audio.write_bytes(pcm_wav())
