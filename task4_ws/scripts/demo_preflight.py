@@ -31,6 +31,7 @@ SENSORS = {
     "/oakd/rgb/preview/camera_info": (CameraInfo, lambda msg: msg.k[0] > 0 and msg.k[4] > 0),
 }
 MAX_STREAM_AGE_SEC = 3.0
+SERVICE_RESPONSE_TIMEOUT_SEC = 2.0
 
 
 def stamp_seconds(stamp):
@@ -116,15 +117,18 @@ def check_demo(node, timeout):
     checks = {}
     while rclpy.ok():
         now = time.monotonic()
-        for name, future in list(pending.items()):
+        for name, (future, requested) in list(pending.items()):
             if future.done():
                 replies[name] = future.result()
+                del pending[name]
+            elif now - requested >= SERVICE_RESPONSE_TIMEOUT_SEC:
+                services[name][0].remove_pending_request(future)
                 del pending[name]
         if now >= next_poll:
             next_poll = now + 0.5
             for name, (client, request) in services.items():
                 if name not in pending and client.service_is_ready():
-                    pending[name] = client.call_async(request)
+                    pending[name] = (client.call_async(request), now)
 
         checks = {name: stream_check(name, now) for name in SENSORS}
         checks["/clock"] = stream_check("/clock", now, require_advance=True)
